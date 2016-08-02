@@ -1,78 +1,91 @@
 <!DOCTYPE html>
-<html ng-app='hunterPage'>
-<head>
-  <meta charset='utf-8'>
-  <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Quicksand:400,700,300' rel='stylesheet' type='text/css'>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <meta name="viewport" content="width=device-width, initial-scale=1" user-scalable='no'>
-  <link rel='stylesheet' href='assets/styles.css'>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-  <script src='js/app.js'></script>
-  <script src='js/controller.js'></script>
-</head>
-<body ng-controller='MainController as MC'>
-  <div class='container-fluid'>
-    <!-- <img src='assets/name.png' class='name'> -->
+<html ng-app='goalsMaterial'>
+  <head>
+    <meta charset="utf-8">
+    <title>G4G</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js'></script>
+    <script src='js/controllers.js'></script>
+    <link rel='stylesheet' href='assets/stylesheets/styles.css'>
+  </head>
+  <body ng-controller='indexCtrl as IC'>
+    <nav class='mainGreen' role='navigation'>
+      <div class='nav-wrapper'>
+        <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+        <ul class='right hide-on-med-and-down container'>
+          <li>
+            <a href='#'>My Profile</a>
+          </li>
+          <li>
+            <a href='#'>News Feed</a>
+          </li>
+          <li>
+            <a href='#'>My Stats</a>
+          </li>
+          <li>
+            <a href='#'>About G4G</a>
+          </li>
+          <li>
+            <i class='material-icons'>settings</i>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Just a spacer for the content -->
     <div class='row'>
-      <div class='col-md-2 col-md-offset-10 quicksand'>
-        <h5>github.com/HunterHoburg</h5>
-        <h5>linkedin.com/in/hhoburg</h5>
-      </div>
-      <div class='col-md-5 col-md-offset-1 subtitle-main quicksand'>
-        <h2 class='quicksand'>Full Stack Web Developer</h2>
-      </div>
     </div>
     <div class='row'>
-      <div class='col-md-6 col-md-offset-2 post-title'>
-        <h2 class='quicksand'>ELI5: Ionic Development</h2>
-        <h4 class='quicksand'>04.05.16</h4>
-      </div>
-      <div class='row'>
-        <div class='col-md-8 col-md-offset-2 post'>
-          <p>
-            This is my first ELI5 post; ELI5 stands for 'Explain Like I'm 5'. Personally, when I'm learning a new technology, I sometimes need things explained to me like that, which is what I'm aiming to do here (without sounding too condescending). Alright class, here we go!
-            <br><br>
-            Developing for mobile devices can be scary. If you use only the things you've learned with Javascript, HTML, and CSS for browser development, you're going to get a lot of apps that just don't work. Luckily, there are some tools out there to make apps for phones more easily! Ionic is my personal favorite; it is based off of something called Cordova, which is what we call a framework. Think about your coloring books. You have crayons and markers of all different colors (these are your programming languages), and then the lines tell you where to put those colors. Cordova and Ionic are just like new coloring books with new lines!
-            <br><br>
-            <span ng-show='MC.postExpanded'>
-              It goes further than that, though. In these new coloring books, they give you <em>colors</em>, so you don't have to find your own. Alright, enough with the ELI5 metaphor. Cordova is great for mobile development because it doesn't strictly rely on some of the APIs on iOS and Android, but you can still access them. An app made with Cordova is a 'hybrid' app because it isn't truly native because it can be built out of just HTML5, CSS, and JS, but uses all of the behavior of a native phone app and is capable of the same level of syncopy as a native app.
-              <br><br>
-              Ionic is just an extension of Cordova; it uses Cordova for the backend, but integrates some CSS3 and AngularJS features that make the behavior of your app a lot easier to program. Some may prefer Cordova, but if you plan on integrating Angular, I find Ionic much easier.
-              <br><br>
-              For instance, Ionic comes pre-packaged with all of your modals, side menus, history functions, and more prepackaged as directives and modules that can be easily integrated into your Angular controllers that you'll define yourself. Cordova offers a lot of integration of platform-specific APIs like device rotation and geolocation, and Ionic gives you ways to manifest that behavior in your app.
-              <br><br>
-              Getting started with Ionic is easy; they have excellent documentation on their website, and I recommend reading it before you start to integrate any of your own behavior in your app; they may already have directives or modules set up to do what you want.
-            </span>
-          </p>
+      <div class='col m3'>
+        <img class='responsive-img' src='assets/images/profilePic.jpg'>
+        <h3 class='flow-text userProfileName heading h3'>{{IC.currentUser.name}}</h3 class='flow-text'>
+        <blockquote>
+          {{IC.currentUser.quote}}
+        </blockquote>
+        <h4 class='flow-text'>{{IC.currentUser.sport}}</h4>
+        <div class='row'>
+          Other sports:
+          <ul>
+            <li ng-repeat='sport in IC.currentUser.otherSports'>
+              <div class='chip'>
+                {{sport}}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class='row'>
 
-          <!-- TODO: Change this so that only the clicked post expands, not all of them -->
-
-
-          <div ng-hide='MC.postExpanded' ng-click='MC.expandPost()' class='expandPost col-md-1 col-md-offset-1'>
-            More
-          </div>
-          <div ng-show='MC.postExpanded' ng-click='MC.closePost()' class='expandPost'
         </div>
       </div>
+      <div class='col m7'>
+        <div class='row'>
+          <div class="row">
+            <div class="input-field col m11">
+              <i class="material-icons prefix">mode_edit</i>
+              <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+              <label for="icon_prefix2">Post Something</label>
+            </div>
+          </div>
+        </div>
+        <div class="card postCard darken-1" ng-repeat='post in IC.currentUser.recentPosts'>
+          <div class="card-content black-text">
+            <span class="card-title">{{IC.currentUser.name}}<h6 class='right postTime'>Posted on {{post.time}}</h6></span>
+            <p>{{post.text}}</p>
+          </div>
+          <div class="card-action">
+            <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
+            <a class='waves-effect likeCommentButton black-text waves-light btn'>Comment</a>
+          </div>
+        </div>
+      </div>
+      <div class='col m2'>
+        <h5>{{IC.currentUser.name}}'s Highlights</h5>
+        <blockquote ng-repeat='feat in IC.currentUser.highlights'>
+          {{feat}}
+        </blockquote>
+      </div>
     </div>
-    <div class='sidebar-background'>
-    </div>
-    <div class='initials-box'>
-      <img src='assets/initials.png' class='initials'>
-    </div>
-    <div>
-      <a href='#'><h3 class='ELI5 sidebar-tab quicksand'>ELI5</h3></a>
-    </div>
-    <div>
-      <a href='#'><h3 class='projects sidebar-tab quicksand'>Projects</h3></a>
-    </div>
-    <div>
-      <a href='#'><h3 class='resume sidebar-tab quicksand'>Resume</h3></a>
-    </div>
-    <div>
-      <a href='#'><h3 class='contact sidebar-tab quicksand'>Contact</h3></a>
-    </div>
-  </div>
-</body>
+  </body>
 </html>

@@ -1,0 +1,30 @@
+body {
+  background-color: #f2fff9;
+}
+
+.mainGreen {
+  background-color: #00C853;
+}
+
+.topG4G {
+  margin-left: 10%;
+}
+
+.postCard {
+  background-color: #EEEEEE;
+}
+
+.postTime {
+  margin-bottom: 2rem;
+}
+
+.userProfileName {
+  font-weight: bold;
+}
+
+.likeCommentButton {
+  background-color: #00C853;
+}
+.likeCommentButton:hover {
+  background-color: #9bfc9c;
+}
