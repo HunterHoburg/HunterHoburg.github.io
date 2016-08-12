@@ -1,98 +1,85 @@
-<!-- CHECK OUT GRAPHQL -->
-
 <!DOCTYPE html>
 <html ng-app='goalsMaterial'>
-  <head>
-    <meta charset="utf-8">
-    <title>G4G</title>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js'></script>
-    <script src='js/controllers.js'></script>
-    <link rel='stylesheet' href='assets/stylesheets/styles.css'>
-  </head>
-  <body ng-controller='indexCtrl as IC'>
+<head>
+  <meta charset="utf-8">
+  <title>G4G</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js'></script>
+  <script src='js/controllers.js'></script>
+  <link rel='stylesheet' href='assets/stylesheets/styles.css'>
+  <script>
+  $(document).ready(function() {
+    $('.modal-trigger').leanModal();
+  });
+  </script>
+</head>
+  <body ng-controller='loginCtrl as LC'>
     <nav class='mainGreen' role='navigation'>
       <div class='nav-wrapper'>
         <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
-        <ul class='right hide-on-med-and-down container'>
-          <li class='active'>
-            <a href='#' class='selected'>My Profile</a>
-          </li>
-          <li>
-            <a href='#'>News Feed</a>
-          </li>
-          <li>
-            <a href='#'>My Stats</a>
-          </li>
-          <li>
-            <a href='#'>About G4G</a>
-          </li>
-          <li>
-            <i class='material-icons'>settings</i>
-          </li>
-        </ul>
+
       </div>
     </nav>
-    <!-- Just a spacer for the content -->
-    <div class='row'>
-    </div>
-    <div class='row'>
-      <div class='col m3'>
-        <img class='responsive-img' src='assets/images/profilePic.jpg'>
-        <h3 class='flow-text userProfileName heading h3'>{{IC.currentUser.name}}</h3 class='flow-text'>
-        <blockquote>
-          {{IC.currentUser.quote}}
-        </blockquote>
-        <h4 class='flow-text'>{{IC.currentUser.sport}}</h4>
-        <div class='row'>
-          Other sports:
-          <ul>
-            <li ng-repeat='sport in IC.currentUser.otherSports'>
-              <div class='chip'>
-                {{sport}}
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class='row'>
-          Favorite Athlete:
-          <h4 class='flow-text heading h4'>{{IC.currentUser.favoriteAthlete}}</h4>
-        </div>
-        <div class='row'>
 
-        </div>
-      </div>
-      <div class='col m7'>
+    <div class='row'>
+      <form class='col m12'>
         <div class='row'>
-          <div class="row">
-            <div class="input-field col m11">
-              <i class="material-icons prefix">mode_edit</i>
-              <input id="icon_prefix2" class="validate" type='text'></input>
-              <label for="icon_prefix2">Post Something</label>
+        </div>
+        <div class='row'>
+          <div class='col m2'>
+          </div>
+          <div class='col m8'>
+            <p class='flow-text center'>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
+            </p>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col m5'>
+          </div>
+          <div class='col m2 center'>
+            <div class='row'>
+              <a class='waves-effect waves-light btn modal-trigger loginPageButton' href='#modal1'>Login</a>
+            </div>
+            <div class='row'>
+              <a class='waves-effect waves-light btn modal-trigger loginPageButton' href='#modal2'>Register</a>
+            </div>
+          </div>
+          <!-- Modals to login and signup -->
+          <div id='modal1' class='modal'>
+            <div class='modal-content'>
+              <h4>Login</h4>
+              <div class='input-field col m6'>
+                <input placeholder='Username' type='text' class='validate'>
+                <input placeholder='Password' type='text' class='validate'>
+                <a class='waves-effect waves-light btn loginPageButton' type='submit' href='/profile'>Submit</a>
+                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+              </div>
+              <div class='row'>
+              </div>
+            </div>
+          </div>
+          <div id='modal2' class='modal'>
+            <div class='modal-content'>
+              <h4>Register</h4>
+              <div class='input-field col m6'>
+                <input placeholder='First Name' type='text' class='validate'>
+                <input placeholder='Last Name' type='text' class='validate'>
+                <input placeholder='Username' type='text' class='validate'>
+                <input placeholder='Password' type='text' class='validate'>
+                <input placeholder='Password' type='text' class='validate'>
+                <a class='waves-effect waves-light btn loginPageButton'>Register</a>
+                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+              </div>
+              <div class='row'>
+              </div>
             </div>
           </div>
         </div>
-        <div class="card postCard darken-1" ng-repeat='post in IC.currentUser.recentPosts'>
-          <div class="card-content black-text">
-            <span class="card-title">{{IC.currentUser.name}}<h6 class='right postTime'>Posted on {{post.time}}</h6></span>
-            <p>{{post.text}}</p>
-          </div>
-          <div class="card-action">
-            <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
-            <a class='waves-effect likeCommentButton black-text waves-light btn'>Comment</a>
-            <h6 class='right' ng-show='post.likes.length > 0'>{{post.likes.length}} people like this</h6>
-          </div>
-        </div>
-      </div>
-      <div class='col m2'>
-        <h5>{{IC.currentUser.name}}'s Highlights</h5>
-        <blockquote ng-repeat='feat in IC.currentUser.highlights'>
-          {{feat}}
-        </blockquote>
-      </div>
+      </form>
     </div>
   </body>
 </html>
