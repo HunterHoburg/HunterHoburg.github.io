@@ -1,3 +1,5 @@
+<!-- CHECK OUT GRAPHQL -->
+
 <!DOCTYPE html>
 <html ng-app='goalsMaterial'>
   <head>
@@ -16,8 +18,8 @@
       <div class='nav-wrapper'>
         <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
         <ul class='right hide-on-med-and-down container'>
-          <li>
-            <a href='#'>My Profile</a>
+          <li class='active'>
+            <a href='#' class='selected'>My Profile</a>
           </li>
           <li>
             <a href='#'>News Feed</a>
@@ -56,6 +58,10 @@
           </ul>
         </div>
         <div class='row'>
+          Favorite Athlete:
+          <h4 class='flow-text heading h4'>{{IC.currentUser.favoriteAthlete}}</h4>
+        </div>
+        <div class='row'>
 
         </div>
       </div>
@@ -64,7 +70,7 @@
           <div class="row">
             <div class="input-field col m11">
               <i class="material-icons prefix">mode_edit</i>
-              <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+              <input id="icon_prefix2" class="validate" type='text'></input>
               <label for="icon_prefix2">Post Something</label>
             </div>
           </div>
@@ -77,6 +83,7 @@
           <div class="card-action">
             <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
             <a class='waves-effect likeCommentButton black-text waves-light btn'>Comment</a>
+            <h6 class='right' ng-show='post.likes.length > 0'>{{post.likes.length}} people like this</h6>
           </div>
         </div>
       </div>

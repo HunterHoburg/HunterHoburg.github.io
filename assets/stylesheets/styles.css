@@ -28,3 +28,14 @@ body {
 .likeCommentButton:hover {
   background-color: #9bfc9c;
 }
+
+.loginPageButton {
+  background-color: #00C853;
+}
+.loginPageButton:hover {
+  background-color: #9bfc9c;
+}
+
+.cancelButton {
+  background-color: #e94646;
+}
