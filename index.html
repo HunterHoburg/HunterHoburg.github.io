@@ -19,7 +19,7 @@
   <body ng-controller='loginCtrl as LC'>
     <nav class='mainGreen' role='navigation'>
       <div class='nav-wrapper'>
-        <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+        <a id='logo-container' href='#' class='brand-logo center'>Goals 4 Glory</a>
 
       </div>
     </nav>
@@ -45,18 +45,24 @@
               <a class='waves-effect waves-light btn modal-trigger loginPageButton' href='#modal1'>Login</a>
             </div>
             <div class='row'>
-              <a class='waves-effect waves-light btn modal-trigger loginPageButton' href='#modal2'>Register</a>
+              <a class='waves-effect waves-light btn modal-trigger loginPageButton register' href='#modal2'>Register</a>
             </div>
           </div>
           <!-- Modals to login and signup -->
           <div id='modal1' class='modal'>
             <div class='modal-content'>
-              <h4>Login</h4>
-              <div class='input-field col m6'>
-                <input placeholder='Username' type='text' class='validate'>
-                <input placeholder='Password' type='text' class='validate'>
-                <a class='waves-effect waves-light btn loginPageButton' type='submit' href='/profile'>Submit</a>
-                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+              <div class='row'>
+                <div class='col m3'>
+                </div>
+                <div class='col m6'>
+                  <h4>Login</h4>
+                  <div class='input-field'>
+                    <input placeholder='Username' type='text' class='validate'>
+                    <input placeholder='Password' type='password' class='validate'>
+                    <a class='waves-effect waves-light btn loginPageButton' type='submit'  ng-click='LC.loginSubmit()'>Submit</a>
+                    <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+                  </div>
+                </div>
               </div>
               <div class='row'>
               </div>
@@ -64,15 +70,21 @@
           </div>
           <div id='modal2' class='modal'>
             <div class='modal-content'>
-              <h4>Register</h4>
-              <div class='input-field col m6'>
-                <input placeholder='First Name' type='text' class='validate'>
-                <input placeholder='Last Name' type='text' class='validate'>
-                <input placeholder='Username' type='text' class='validate'>
-                <input placeholder='Password' type='text' class='validate'>
-                <input placeholder='Password' type='text' class='validate'>
-                <a class='waves-effect waves-light btn loginPageButton'>Register</a>
-                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+              <div class='row'>
+                <div class='col m3'>
+                </div>
+                <div class='col m6'>
+                  <h4>Register</h4>
+                  <div class='input-field'>
+                    <input placeholder='First Name' type='text' class='validate'>
+                    <input placeholder='Last Name' type='text' class='validate'>
+                    <input placeholder='Username' type='text' class='validate'>
+                    <input placeholder='Password' type='password' class='validate'>
+                    <input placeholder='Confirm Password' type='password' class='validate'>
+                    <a class='waves-effect waves-light btn loginPageButton'>Register</a>
+                    <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+                  </div>
+                </div>
               </div>
               <div class='row'>
               </div>

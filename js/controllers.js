@@ -1,7 +1,7 @@
 var app = angular.module('goalsMaterial', []);
 
 app.controller('indexCtrl', [indexCtrl]);
-app.controller('loginCtrl', [loginCtrl]);
+app.controller('loginCtrl', ['$http', loginCtrl]);
 
 function indexCtrl() {
   var vm = this;
@@ -28,10 +28,39 @@ function indexCtrl() {
       'Laxed super hard'
     ]
   }
+  //The following function would require validation to see if changes are made, and then subsequent server calls to change that info
+  vm.changeInfo = function(newQuote, newSport) {
+    if (vm.currentUser.quote !== newQuote) {
+      vm.currentUser.quote = newQuote;
+    }
+    if (vm.currentUser.sport !== newSport) {
+      vm.currentUser.sport = newSport;
+    }
+  }
 }
 
-function loginCtrl() {
+function loginCtrl($http) {
   var vm = this;
 
   vm.currentUser = 'testUser'
+
+  vm.loginSubmit = function() {
+    $http({
+      method: 'POST',
+      url: 'blackhetdenver.com/test2/mobilePortal.php',
+      data: {
+        func: 'executeLogin',
+        username: 'jkohut48',
+        password: 'Kitkat74'
+      }
+    }).then(function(res, err) {
+      console.log(res);
+    });
+  }
 }
+
+// function feedCtrl() {
+//   var vm = this;
+//
+//   // vm.currentUser = indexCtrl.currentUser;
+// }

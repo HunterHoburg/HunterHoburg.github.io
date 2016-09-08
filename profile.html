@@ -10,6 +10,11 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js'></script>
     <script src='js/controllers.js'></script>
     <link rel='stylesheet' href='assets/stylesheets/styles.css'>
+    <script>
+    $(document).ready(function() {
+      $('.modal-trigger').leanModal();
+    });
+    </script>
   </head>
   <body ng-controller='indexCtrl as IC'>
     <nav class='mainGreen' role='navigation'>
@@ -41,6 +46,34 @@
       <div class='col m3'>
         <img class='responsive-img' src='assets/images/profilePic.jpg'>
         <h3 class='flow-text userProfileName heading h3'>{{IC.currentUser.name}}</h3 class='flow-text'>
+        <a class='modal-trigger btn' href='#editProfileModal'>Edit Info<i class='material-icons'>mode_edit</i></a>
+        <!-- Modal for editing info -->
+        <div id='editProfileModal' class='modal'>
+          <div class='modal-content'>
+            <div class='row'>
+                <h4>Edit Info</h4>
+                <div class='input-field'>
+                  <input id='quoteChange' class='validate' placeholder='{{IC.currentUser.quote}}' type='text' ng-model='newQuote'></input>
+                  <label for='quoteChange'>Quote</label>
+                <div class='input-field'>
+                  <input id='sportChange' class='validate' placeholder='{{IC.currentUser.sport}}' type='text' ng-model='newSport'></input>
+                  <label for='sportChange'>Favorite Sport</label>
+                </div>
+                <div class='input-field'>
+                  <div class='chip' ng-repeat='sport in IC.currentUser.otherSports'>
+                    {{sport}}
+                  </div>
+                  <!-- GOTTA DO SPORT EDITING RIGHT HERE -->
+                  <!-- <div class='' -->
+                </div>
+                  <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-click='IC.changeInfo(newQuote, newSport)'>Save</a>
+                  <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+                </div>
+            </div>
+            <div class='row'>
+            </div>
+          </div>
+        </div>
         <blockquote>
           {{IC.currentUser.quote}}
         </blockquote>

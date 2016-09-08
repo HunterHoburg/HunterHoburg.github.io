@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app='goalsMaterial'>
+  <head>
+    <meta charset="utf-8">
+    <title>G4G</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js'></script>
+    <script src='js/controllers.js'></script>
+    <link rel='stylesheet' href='assets/stylesheets/styles.css'>
+    <script>
+    $(document).ready(function() {
+      $('.modal-trigger').leanModal();
+    });
+    </script>
+  </head>
+  <body ng-controller='feedCtrl as FC'>
+    <nav class='mainGreen' role='navigation'>
+      <div class='nav-wrapper'>
+        <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+        <ul class='right hide-on-med-and-down container'>
+          <li class='active'>
+            <a href='#' class='selected'>My Profile</a>
+          </li>
+          <li>
+            <a href='/feed'>News Feed</a>
+          </li>
+          <li>
+            <a href='#'>My Stats</a>
+          </li>
+          <li>
+            <a href='#'>About G4G</a>
+          </li>
+          <li>
+            <i class='material-icons'>settings</i>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </body>
+</html>
