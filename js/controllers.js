@@ -47,7 +47,7 @@ function loginCtrl($http) {
   vm.loginSubmit = function() {
     $http({
       method: 'POST',
-      url: 'blackhetdenver.com/test2/mobilePortal.php',
+      url: 'http://blackhatdenver.com/test2/mobilePortal.php',
       data: {
         func: 'executeLogin',
         username: 'jkohut48',
