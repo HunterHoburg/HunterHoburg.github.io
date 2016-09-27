@@ -1,0 +1,117 @@
+<div ng-controller='profileCtrl as PC'>
+  <nav class='mainGreen' role='navigation'>
+    <div class='nav-wrapper'>
+      <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+      <ul class='right hide-on-med-and-down container'>
+        <li class='active'>
+          <a href='#' class='selected'>My Profile</a>
+        </li>
+        <li>
+          <a href='' ng-click='PC.printStateParams()'>News Feed</a>
+        </li>
+        <li>
+          <a href='#'>My Stats</a>
+        </li>
+        <li>
+          <a href='' ng-click='PC.getUserPosts()'>About G4G</a>
+        </li>
+        <li class='right navSettings'>
+          <a href='#'><i class='material-icons'>settings</i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- Just a spacer for the content -->
+  <div class='row'>
+  </div>
+  <div class='row'>
+    <div class='col m3'>
+      <div class='row'>
+        <img class='responsive-img' src='assets/profilePic.jpg'>
+        <h3 class='flow-text userProfileName heading h3'>{{PC.user.first}} {{PC.user.last}} <a class='modal-trigger btn right' href='#editProfileModal'><i class='material-icons'>mode_edit</i></a></h3>
+      </div>
+      <div class='row'>
+        <h4 class='flow-text'>{{PC.user.first}}'s friends</h4>
+        <div class='chip' ng-repeat='friend in PC.friends'>
+          {{friend.name}}
+        </div>
+      </div>
+      <!-- Modal for editing info -->
+      <div id='editProfileModal' class='modal'>
+        <div class='modal-content'>
+          <div class='row'>
+              <h4>Edit Info</h4>
+              <div class='input-field'>
+                <input id='quoteChange' class='validate' placeholder='{{PC.currentUser.quote}}' type='text' ng-model='newQuote'></input>
+                <label for='quoteChange'>Quote</label>
+              <div class='input-field'>
+                <input id='sportChange' class='validate' placeholder='{{PC.currentUser.sport}}' type='text' ng-model='newSport'></input>
+                <label for='sportChange'>Favorite Sport</label>
+              </div>
+              <div class='input-field'>
+                <div class='chip' ng-repeat='sport in PC.currentUser.otherSports'>
+                  {{sport}}
+                </div>
+                <!-- GOTTA DO SPORT EDITING RIGHT HERE -->
+                <!-- <div class='' -->
+              </div>
+                <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-clPCk='PC.changeInfo(newQuote, newSport)'>Save</a>
+                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+              </div>
+          </div>
+          <div class='row'>
+          </div>
+        </div>
+      </div>
+      <blockquote>
+        {{PC.currentUser.quote}}
+      </blockquote>
+      <h4 class='flow-text'>{{PC.currentUser.sport}}</h4>
+      <div class='row'>
+        Other sports:
+        <ul>
+          <li ng-repeat='sport in PC.currentUser.otherSports'>
+            <div class='chip'>
+              {{sport}}
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class='row'>
+        Favorite Athlete:
+        <h4 class='flow-text heading h4'>{{PC.currentUser.favoriteAthlete}}</h4>
+      </div>
+      <div class='row'>
+
+      </div>
+    </div>
+    <div class='col m7'>
+      <div class='row'>
+        <div class="row">
+          <div class="input-field col m11">
+            <i class="material-icons prefix">mode_edit</i>
+            <input id="PCon_prefix2" class="validate" type='text'></input>
+            <label for="PCon_prefix2">Post Something</label>
+          </div>
+        </div>
+      </div>
+      <div class="card postCard darken-1" ng-repeat='post in PC.userPosts'>
+        <div class="card-content black-text">
+          <span class="card-title">{{PC.user.first}} {{PC.user.last}}<h6 class='right postTime'>Posted on {{post.post_date}}</h6></span>
+          <p>{{post.text}}</p>
+        </div>
+        <div class="card-action">
+          <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
+          <a class='waves-effect likeCommentButton black-text waves-light btn'>Comment</a>
+          <h6 class='right' ng-show='post.likes.length > 0'>{{post.likes.length}} people like this</h6>
+        </div>
+      </div>
+    </div>
+    <div class='col m2'>
+      <h5>{{PC.user.first}}'s Highlights</h5>
+      <blockquote ng-repeat='feat in PC.currentUser.highlights'>
+        {{feat}}
+      </blockquote>
+    </div>
+  </div>
+</div>
