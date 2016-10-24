@@ -1,0 +1,33 @@
+<script>
+$(document).ready(function() {
+  $('.modal-trigger').leanModal();
+});
+$(document).ready(function() {
+  $('select').material_select();
+});
+</script>
+
+<div ng-controller='feedCtrl as FC'>
+  <nav class='mainGreen' role='navigation'>
+    <div class='nav-wrapper'>
+      <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+      <ul class='right hide-on-med-and-down container'>
+        <li class=''>
+          <a href='#' class=''>My Profile</a>
+        </li>
+        <li class='active'>
+          <a href='' ng-click=''>News Feed</a>
+        </li>
+        <li>
+          <a href='#'>My Stats</a>
+        </li>
+        <li>
+          <a href='' ng-click=''>About G4G</a>
+        </li>
+        <li class='right navSettings'>
+          <a href='#'><i class='material-icons'>settings</i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

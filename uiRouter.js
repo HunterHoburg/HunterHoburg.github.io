@@ -12,7 +12,7 @@ var app = angular.module('g4g', ['ui.router'])
         }
       })
       .state('profile', {
-        url: '/profile{user: json}',
+        url: '/profile/{user: json}',
         views: {
           '': {templateUrl: 'templates/profile.html',
           params: {
@@ -21,5 +21,15 @@ var app = angular.module('g4g', ['ui.router'])
         }
       }
     })
+    .state('feed', {
+      url: '/feed/{user: json}',
+      views: {
+        '': {templateUrl: 'templates/feed.html',
+        params: {
+          user: null
+        }
+      }
+    }
+  })
   }
 ])

@@ -1,4 +1,105 @@
+<script>
+$(document).ready(function() {
+  $('.modal-trigger').leanModal();
+});
+$(document).ready(function() {
+  $('select').material_select();
+});
+</script>
+
+
 <div ng-controller='profileCtrl as PC'>
+  <div id='editProfileModal' class='modal'>
+    <div class='modal-content'>
+      <div class='row'>
+          <h4>Edit Info</h4>
+          <div class='input-field'>
+            <input id='quoteChange' class='validate' placeholder='{{PC.currentUser.quote}}' type='text' ng-model='newQuote'></input>
+            <label for='quoteChange'>Quote</label>
+          <div class='input-field'>
+            <input id='sportChange' class='validate' placeholder='{{PC.currentUser.sport}}' type='text' ng-model='newSport'></input>
+            <label for='sportChange'>Favorite Sport</label>
+          </div>
+          <div class='input-field'>
+            <div class='chip' ng-repeat='sport in PC.currentUser.otherSports'>
+              {{sport}}
+            </div>
+            <!-- GOTTA DO SPORT EDITING RIGHT HERE -->
+            <!-- <div class='' -->
+          </div>
+            <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-clPCk='PC.changeInfo(newQuote, newSport)'>Save</a>
+            <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
+          </div>
+      </div>
+      <div class='row'>
+      </div>
+    </div>
+  </div>
+
+  <div id='viewProgressModal' class='modal'>
+    <div class='modal-content'>
+      <div class='row'>
+        <div class='col m6'>
+          <h4>View Progress</h4>
+        </div>
+        <div class='col m6'>
+          <select name='workoutSelect' ng-model='workout' required='required' id='workoutSelect' ng-change='PC.getWorkouts(workout)'>
+            <option value='' disabled selected>
+              Choose Workout
+            </option>
+            <option value='pushups'>
+              Pushups
+            </option>
+            <option value='planks'>
+              Planks
+            </option>
+          </select>
+          <label for='workoutSelect'>Select Workout</label>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col m10'>
+          <div id='curve_chart' style='width: 100%; height: 300px'>
+          </div>
+        </div>
+        <div class='col m2' ng-show='PC.workoutMeta.type==="pushups"'>
+          <div class='row'>
+            <p>
+              Total Pushups: {{PC.workoutMeta.total}}
+            </p>
+            <p>
+              Max in one day: {{PC.workoutMeta.max.amount}}
+            </p>
+          </div>
+          <div class='row'>
+            <p>
+              Log pushups for today
+            </p>
+            <input type='number' class='validate' placeholder='No. of Pushups' ng-model='newPushups'>
+            <button href='#' class='btn btn-waves' ng-click='PC.addWorkout("pushups", newPushups)'>Log it!</button>
+          </div>
+        </div>
+        <div class='col m2' ng-show='PC.workoutMeta.type==="planks"'>
+          <div class='row'>
+            <p>
+              Total Time in Planks: {{PC.workoutMeta.total | formatTime}}
+            </p>
+            <p>
+              Max Plank: {{PC.workoutMeta.max.amount | formatTime}}
+            </p>
+          </div>
+          <div class='row'>
+            <p>
+              Log planks for today
+            </p>
+            <input type='number' class='validate' placeholder='No. of Planks' ng-model='newPlanks'>
+            <button href='#' class='btn btn-waves' ng-click='PC.addWorkout("planks", newPlanks)'>Log it!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <nav class='mainGreen' role='navigation'>
     <div class='nav-wrapper'>
       <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
@@ -7,7 +108,7 @@
           <a href='#' class='selected'>My Profile</a>
         </li>
         <li>
-          <a href='' ng-click='PC.printStateParams()'>News Feed</a>
+          <a href='' ng-click='PC.switchNewsFeed()'>News Feed</a>
         </li>
         <li>
           <a href='#'>My Stats</a>
@@ -33,46 +134,20 @@
       <div class='row'>
         <h4 class='flow-text'>{{PC.user.first}}'s friends</h4>
         <div class='chip' ng-repeat='friend in PC.friends'>
-          {{friend.name}}
+          {{friend.first}}
         </div>
       </div>
       <!-- Modal for editing info -->
-      <div id='editProfileModal' class='modal'>
-        <div class='modal-content'>
-          <div class='row'>
-              <h4>Edit Info</h4>
-              <div class='input-field'>
-                <input id='quoteChange' class='validate' placeholder='{{PC.currentUser.quote}}' type='text' ng-model='newQuote'></input>
-                <label for='quoteChange'>Quote</label>
-              <div class='input-field'>
-                <input id='sportChange' class='validate' placeholder='{{PC.currentUser.sport}}' type='text' ng-model='newSport'></input>
-                <label for='sportChange'>Favorite Sport</label>
-              </div>
-              <div class='input-field'>
-                <div class='chip' ng-repeat='sport in PC.currentUser.otherSports'>
-                  {{sport}}
-                </div>
-                <!-- GOTTA DO SPORT EDITING RIGHT HERE -->
-                <!-- <div class='' -->
-              </div>
-                <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-clPCk='PC.changeInfo(newQuote, newSport)'>Save</a>
-                <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
-              </div>
-          </div>
-          <div class='row'>
-          </div>
-        </div>
-      </div>
       <blockquote>
         {{PC.currentUser.quote}}
       </blockquote>
-      <h4 class='flow-text'>{{PC.currentUser.sport}}</h4>
+      <!-- <h4 class='flow-text'>{{PC.currentUser.sport}}</h4> -->
       <div class='row'>
-        Other sports:
+        Sports:
         <ul>
-          <li ng-repeat='sport in PC.currentUser.otherSports'>
+          <li ng-repeat='sport in PC.userSports'>
             <div class='chip'>
-              {{sport}}
+              {{sport.text}}
             </div>
           </li>
         </ul>
@@ -86,31 +161,66 @@
       </div>
     </div>
     <div class='col m7'>
-      <div class='row'>
         <div class="row">
-          <div class="input-field col m11">
-            <i class="material-icons prefix">mode_edit</i>
-            <input id="PCon_prefix2" class="validate" type='text'></input>
-            <label for="PCon_prefix2">Post Something</label>
+          <div class='col m3'>
+            <a class='btn modal-trigger profileProgressButton' href='#viewProgressModal'>Progress</a>
+            <a class='btn profileWorkoutButton'>Log</a>
+          </div>
+          <div class="input-field col m9">
+            <div class='row'>
+              <div class='col m10'>
+                <i class="material-icons prefix">mode_edit</i>
+                <input id="PCon_prefix2" class="validate" type='text' ng-model='newPost'></input>
+                <label for="PCon_prefix2">Post Something</label>
+              </div>
+              <div class='col m2'>
+                <a class='btn' ng-click='PC.createPost(newPost)' ng-show='newPost.length > 0'>Post</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
       <div class="card postCard darken-1" ng-repeat='post in PC.userPosts'>
         <div class="card-content black-text">
           <span class="card-title">{{PC.user.first}} {{PC.user.last}}<h6 class='right postTime'>Posted on {{post.post_date}}</h6></span>
           <p>{{post.text}}</p>
+          <div class='postComments' ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id'>
+            <div ng-repeat='comment in post.comments'>
+              <span ng-repeat='friend in PC.friends | filter:{user_id: comment.user_id}'>{{friend.first}}</span>
+              <p>
+                {{comment.text}}
+              </p>
+            </div>
+          </div>
         </div>
         <div class="card-action">
-          <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
-          <a class='waves-effect likeCommentButton black-text waves-light btn'>Comment</a>
+          <div ng-hide='PC.writingComment && PC.currentPost.post_id === post.post_id'>
+            <a ng-show='{{post.has_comments}}' ng-hide='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.getPostComments(post)' class='btn-flat'>Show Comments</a>
+            <a ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.hidePostComments()' class='btn-flat'>Hide Comments</a>
+            <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
+            <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='PC.toggleWriteComment(post)'>Comment</a>
+          </div>
+          <div ng-show='PC.writingComment && PC.currentPost.post_id === post.post_id'>
+            <div class='row'>
+              <div class='input-field'>
+                <div class='col m10'>
+                  <label for='newComment'>Write a Comment</label>
+                  <input id='newComment' type='text' class='validate' ng-model='newComment'>
+                </div>
+                <div class='col m2'>
+                  <a class='btn' ng-click='PC.createComment(newComment, post)'>Post</a>
+                  <a class='btn' ng-click='PC.toggleWriteComment(post)'>Cancel</a>
+                </div>
+              </div>
+            </div>
+          </div>
           <h6 class='right' ng-show='post.likes.length > 0'>{{post.likes.length}} people like this</h6>
         </div>
       </div>
     </div>
     <div class='col m2'>
       <h5>{{PC.user.first}}'s Highlights</h5>
-      <blockquote ng-repeat='feat in PC.currentUser.highlights'>
-        {{feat}}
+      <blockquote ng-repeat='feat in PC.highlights'>
+        {{feat.text}}
       </blockquote>
     </div>
   </div>

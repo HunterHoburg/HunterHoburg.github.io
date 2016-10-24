@@ -22,6 +22,15 @@ body {
   font-weight: bold;
 }
 
+.profileWorkoutButton {
+  width: 100%;
+  background-color: #00C853;
+}
+.profileProgressButton {
+  width: 100%;
+  background-color: #34bfeb;
+}
+
 .likeCommentButton {
   background-color: #00C853;
 }
