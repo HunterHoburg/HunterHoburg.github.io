@@ -44,6 +44,7 @@ $(document).ready(function() {
             <input id='passConfirm' placeholder='Confirm Password' type='password' class='validate'>
             <label for='passConfirm' data-error='Your passwords do not match!' data-success='right'></label>
             <input type='date' class='datepicker' ng-model='date'>
+            <input type='text' class='validate' placeholder='Gender' ng-model='gender'>
             <!--: Client-side password validation here -->
             <input placeholder='Country' type='text' class='validate' ng-model='country'>
             <input placeholder='Zip' type='text' class='validate' ng-model='zip'>
@@ -51,7 +52,7 @@ $(document).ready(function() {
               <input type='checkbox' id='agreement' ng-model='agree' />
               <label for='agreement'>Do you agree to G4G's <a href='#'>Terms of Use</a> and <a href='#'>Privacy Policy</a>?</label>
             </p>
-            <a class='waves-effect waves-light btn loginPageButton' ng-click='LC.registerSubmit(user, pass, first, last, date, email, country, zip, agree)'>Register</a>
+            <a class='waves-effect waves-light btn loginPageButton' ng-click='LC.registerSubmit(user, pass, first, last, date, email, country, zip, gender, agree)'>Register</a>
             <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
           </div>
         </div>

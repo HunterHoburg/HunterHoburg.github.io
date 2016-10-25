@@ -1,0 +1,237 @@
+<script>
+$(document).ready(function() {
+  $('.modal-trigger').leanModal();
+});
+$(document).ready(function() {
+  $('select').material_select();
+});
+</script>
+<div ng-controller='friendCtrl as FC'>
+
+  <div id='addFriendModal' class='modal'>
+    <div class='modal-content'>
+      <div class='row'>
+        <h4>Add {{FC.friendData.first}}?</h4>
+        <button class='btn btn-waves modal-close' ng-click='FC.addFriend()'>Confirm</button>
+        <button class='btn btn-waves red modal-close'>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id='viewProgressModal' class='modal'>
+    <div class='modal-content'>
+      <div class='row'>
+        <div class='col m6'>
+          <h4>View {{FC.friendData.first}}'s Progress</h4>
+        </div>
+        <div class='col m6'>
+          <select name='workoutSelect' ng-model='workout' required='required' id='workoutSelect' ng-change='FC.getWorkouts(workout)'>
+            <option value='' disabled selected>
+              Choose Workout
+            </option>
+            <option value='pushups'>
+              Pushups
+            </option>
+            <option value='planks'>
+              Planks
+            </option>
+          </select>
+          <label for='workoutSelect'>Select Workout</label>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col m10'>
+          <div id='curve_chart' style='width: 100%; height: 300px'>
+          </div>
+        </div>
+        <div class='col m2' ng-show='FC.workoutMeta.type==="pushups"'>
+          <div class='row'>
+            <p>
+              Total Pushups: {{FC.workoutMeta.total}}
+            </p>
+            <p>
+              Max in one day: {{FC.workoutMeta.max.amount}}
+            </p>
+          </div>
+          <div class='row'>
+            <p>
+              Log pushups for today
+            </p>
+            <input type='number' class='validate' placeholder='No. of Pushups' ng-model='newPushups'>
+            <button href='#' class='btn btn-waves' ng-click='FC.addWorkout("pushups", newPushups)'>Log it!</button>
+          </div>
+        </div>
+        <div class='col m2' ng-show='FC.workoutMeta.type==="planks"'>
+          <div class='row'>
+            <p>
+              Total Time in Planks: {{FC.workoutMeta.total | formatTime}}
+            </p>
+            <p>
+              Max Plank: {{FC.workoutMeta.max.amount | formatTime}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class='mainGreen' role='navigation'>
+    <div class='nav-wrapper'>
+      <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+      <ul class='right hide-on-med-and-down'>
+        <li class=''>
+          <a href='' ng-click='FC.switchProfile()' class=''>My Profile</a>
+        </li>
+        <li class=''>
+          <a href='' ng-click='FC.switchNewsFeed()'>News Feed</a>
+        </li>
+        <li>
+          <a href='#'>My Stats</a>
+        </li>
+        <li>
+          <a href='' ng-click=''>About G4G</a>
+        </li>
+        <li class='right navSettings'>
+          <a href='#'><i class='material-icons'>settings</i></a>
+        </li>
+      </ul>
+      <form ng-submit='FC.search(searchQuery)'>
+        <div class="input-field right">
+          <input id="search" type="search" required class='searchBar' placeholder='Search' ng-model='searchQuery'>
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+
+  <div class='row'>
+  </div>
+  <div class='row'>
+    <div class='col m3'>
+      <div class='row'>
+        <div class='col m12'>
+          <img class='responsive-img' src='assets/profilePic.jpg'>
+          <div class='row profileData'>
+            <h3 class='flow-text userProfileName heading h3'>{{FC.friendData.first}} {{FC.friendData.last}}</h3>
+            <span>{{FC.friendData.gender}}, {{FC.friendData.state}}</span>
+          </div>
+          <div class='row profileData'>
+            <a ng-show='FC.notFriends' class='modal-trigger btn left' href='#addFriendModal'><i class='material-icons'>assignment_ind</i> Add Friend</a>
+            <a ng-show='!FC.notFriends' class='modal-trigger btn left' href='#unfriendModal'><i class='material-icons'>check</i> Friends</a>
+          </div>
+        </div>
+      </div>
+      <div class='row profileData'>
+        <h4 class='flow-text'>{{FC.friendData.first}}'s friends</h4>
+        <div class='chip' ng-repeat='friend in FC.friendFriends | filter: {user_id: "!" + FC.friendData.user_id} | limitTo:10' ng-click='FC.friendPage(friend)'>
+          <a href=''>{{friend.first}} {{friend.last}}</a>
+        </div>
+      </div>
+      <!-- Modal for editing info -->
+      <blockquote>
+        {{FC.currentUser.quote}}
+      </blockquote>
+      <!-- <h4 class='flow-text'>{{FC.currentUser.sport}}</h4> -->
+      <div class='row'>
+        Sports:
+        <ul>
+          <li ng-repeat='sport in FC.userSports'>
+            <div class='chip'>
+              {{sport.text}}
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class='row'>
+        Favorite Athlete:
+        <h4 class='flow-text heading h4'>{{FC.friendData.favoriteAthlete}}</h4>
+      </div>
+      <div class='row'>
+
+      </div>
+    </div>
+    <div class='col m7'>
+      <div class='row'>
+        <button class='btn btn-waves center modal-trigger profileProgressButton' href='#viewProgressModal'>View {{FC.friendData.first}}'s Progress</button>
+      </div>
+      <div class='card postCard' ng-show='FC.posts.length == 0'>
+        <div class='card-content'>
+          <h4>{{FC.friendData.first}} doesn't have any posts!</h4>
+        </div>
+      </div>
+      <div class="card postCard darken-1" ng-repeat='post in FC.posts | orderBy: "post_id" | reverse'>
+        <div class="card-content black-text">
+          <span class="card-title">{{FC.friendData.first}} {{FC.friendData.last}}<h6 class='right postTime'>Posted on {{post.post_date | date : medium}}</h6></span>
+          <p>{{post.text}}</p>
+          <div class='postComments' ng-show='FC.commentsExpanded && FC.currentPost.post_id === post.post_id'>
+            <div ng-repeat='comment in post.comments'>
+              <div class='row'>
+                <div class='col m10'>
+                  <blockquote class='postComment'>
+                    <span ng-repeat='friend in FC.friendFriends | filter:{user_id: comment.user_id}'>{{friend.first}} {{friend.last}}</span>
+                    <p>
+                      {{comment.text}}
+                    </p>
+                  </blockquote>
+                </div>
+                <div class='col m2'>
+                  <div class='right' ng-show='comment.user_id === FC.friendData.user_id'>
+                    <a class='btn btn-flat red' ng-click='FC.deleteComment(comment, post)'>Delete</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show='post.comments.length <= 0'>
+              No comments for this post!
+            </div>
+          </div>
+        </div>
+        <div class="card-action">
+          <div class='row'>
+            <div class='col m9'>
+              <div ng-hide='FC.writingComment && FC.currentPost.post_id === post.post_id'>
+                <a ng-show='{{post.has_comments}}' ng-hide='FC.commentsExpanded && FC.currentPost.post_id === post.post_id' href='' ng-click='FC.getPostComments(post)' class='btn-flat'>Show Comments</a>
+                <a ng-show='FC.commentsExpanded && FC.currentPost.post_id === post.post_id' href='' ng-click='FC.hidePostComments()' class='btn-flat'>Hide Comments</a>
+                <a class='waves-effect likeCommentButton waves-light black-text btn' ng-click='FC.likePost(post)'>Like</a>
+                <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='FC.toggleWriteComment(post)'>Comment</a>
+              </div>
+              <div ng-show='FC.writingComment && FC.currentPost.post_id === post.post_id'>
+                <div class='row'>
+                  <div class='input-field'>
+                    <div class='col m10'>
+                      <label for='newComment'>Write a Comment</label>
+                      <input id='newComment' type='text' class='validate' ng-model='newComment'>
+                    </div>
+                    <div class='col m2'>
+                      <a class='btn' ng-click='FC.createComment(newComment, post)'>Comment</a>
+                      <a class='btn' ng-click='FC.toggleWriteComment(post)'>Cancel</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class='col m3'>
+              <h6 class='right' ng-show='post.likes.length > 1 && post.likes.indexOf(FC.friendData.user_id) < 0'>{{post.likes.length}} people like this</h6>
+              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(FC.friendData.user_id) < 0'>1 person likes this</h6>
+              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(FC.friendData.user_id) >= 0'>You like this</h6>
+              <h6 class='right' ng-show='post.likes.length === 2 && post.likes.indexOf(FC.friendData.user_id) >= 0'>You and {{post.likes.length - 1}} other person like this</h6>
+              <h6 class='right' ng-show='post.likes.length > 2 && post.likes.indexOf(FC.friendData.user_id) >= 0'>You and {{post.likes.length - 1}} other people like this</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='col m2'>
+      <h5>{{FC.friendData.first}}'s Highlights</h5>
+      <div class='card postCard' ng-show='FC.highlights.length == 0'>
+        <div class='card-content'>
+          <p>{{FC.friendData.first}} doesn't have any highlights yet!</p>
+        </div>
+      </div>
+      <blockquote ng-repeat='feat in FC.highlights'>
+        {{feat.text}}
+      </blockquote>
+    </div>
+  </div>
+</div>

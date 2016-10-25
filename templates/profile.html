@@ -9,6 +9,38 @@ $(document).ready(function() {
 
 
 <div ng-controller='profileCtrl as PC'>
+  <div id='notificationModal' class='modal'>
+    <div class='modal-content'>
+      <ul>
+        <li ng-repeat='notification in PC.userNotifications'>
+          <div ng-show='notification.type==="request"'>
+            <h5>{{notification.first}} {{notification.last}} sent you a friend request!</h5>
+            <p>
+              {{notification.date | date : medium}}
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div id='addHighlightModal' class='modal modal-fixed-footer'>
+    <div class='modal-content'>
+      <span class='card-title'>Add a Highlight</span>
+      <div class='row'>
+        <form>
+          <div class='input-field'>
+            <input class='validate' name='highlightInput' type='text' required='string' ng-model='newHighlight'>
+            <label for='highlightInput'>Highlight</label>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class='modal-footer'>
+      <button class='btn btn-waves red modal-close'>Cancel</button>
+      <button class='btn btn-waves modal-close' ng-click='PC.addHighlight(newHighlight)'>Submit</button>
+    </div>
+  </div>
   <div id='editProfileModal' class='modal'>
     <div class='modal-content'>
       <div class='row'>
@@ -103,15 +135,15 @@ $(document).ready(function() {
   <nav class='mainGreen' role='navigation'>
     <div class='nav-wrapper'>
       <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
-      <ul class='right hide-on-med-and-down container'>
+      <ul class='right hide-on-med-and-down'>
+        <li>
+          <a href='#notificationModal' class='modal-trigger'>Notifications</a>
+        </li>
         <li class='active'>
           <a href='#' class='selected'>My Profile</a>
         </li>
         <li>
           <a href='' ng-click='PC.switchNewsFeed()'>News Feed</a>
-        </li>
-        <li>
-          <a href='#'>My Stats</a>
         </li>
         <li>
           <a href='' ng-click='PC.getUserPosts()'>About G4G</a>
@@ -120,6 +152,13 @@ $(document).ready(function() {
           <a href='#'><i class='material-icons'>settings</i></a>
         </li>
       </ul>
+      <form ng-submit='PC.search(searchQuery)'>
+        <div class="input-field right">
+          <input id="search" type="search" required class='searchBar' placeholder='Search' ng-model='searchQuery'>
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
     </div>
   </nav>
   <!-- Just a spacer for the content -->
@@ -133,8 +172,8 @@ $(document).ready(function() {
       </div>
       <div class='row'>
         <h4 class='flow-text'>{{PC.user.first}}'s friends</h4>
-        <div class='chip' ng-repeat='friend in PC.friends'>
-          {{friend.first}}
+        <div class='chip' ng-repeat='friend in PC.friends | filter: {user_id: "!" + PC.user.user_id}' ng-click='PC.friendPage(friend)'>
+          <a href=''>{{friend.first}} {{friend.last}}</a>
         </div>
       </div>
       <!-- Modal for editing info -->
@@ -164,61 +203,100 @@ $(document).ready(function() {
         <div class="row">
           <div class='col m3'>
             <a class='btn modal-trigger profileProgressButton' href='#viewProgressModal'>Progress</a>
-            <a class='btn profileWorkoutButton'>Log</a>
+            <a class='btn profileWorkoutButton' ng-click='PC.creatingPost()' ng-show='!PC.postWrite'>Post Status</a>
+            <a class='btn profileWorkoutButton' ng-click='PC.creatingPost()' ng-show='PC.postWrite'>Cancel</a>
+
           </div>
-          <div class="input-field col m9">
+          <div class="input-field col m9" ng-show='PC.postWrite'>
             <div class='row'>
               <div class='col m10'>
-                <i class="material-icons prefix">mode_edit</i>
+                <!-- <i class="material-icons prefix">mode_edit</i> -->
                 <input id="PCon_prefix2" class="validate" type='text' ng-model='newPost'></input>
-                <label for="PCon_prefix2">Post Something</label>
+                <label for="PCon_prefix2">Write here</label>
               </div>
               <div class='col m2'>
-                <a class='btn' ng-click='PC.createPost(newPost)' ng-show='newPost.length > 0'>Post</a>
+                <a class='btn' ng-click='PC.createPost(newPost)'>Post</a>
               </div>
             </div>
           </div>
         </div>
-      <div class="card postCard darken-1" ng-repeat='post in PC.userPosts'>
+      <div class='card postCard' ng-show='PC.userPosts.length == 0'>
+        <div class='card-content'>
+          <h4>You don't have any posts!</h4>
+        </div>
+      </div>
+      <div ng-show='PC.userPosts.length > 0' class="card postCard darken-1" ng-repeat='post in PC.userPosts | orderBy: "post_id" | reverse'>
         <div class="card-content black-text">
-          <span class="card-title">{{PC.user.first}} {{PC.user.last}}<h6 class='right postTime'>Posted on {{post.post_date}}</h6></span>
+          <span class="card-title">{{PC.user.first}} {{PC.user.last}}<h6 class='right postTime'>Posted on {{post.post_date | date : medium}}</h6></span>
           <p>{{post.text}}</p>
           <div class='postComments' ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id'>
             <div ng-repeat='comment in post.comments'>
-              <span ng-repeat='friend in PC.friends | filter:{user_id: comment.user_id}'>{{friend.first}}</span>
-              <p>
-                {{comment.text}}
-              </p>
+              <div class='row'>
+                <div class='col m10'>
+                  <blockquote class='postComment'>
+                    <span ng-repeat='friend in PC.friends | filter:{user_id: comment.user_id}'><a ng-click='PC.friendPage(friend)' href=''>{{friend.first}} {{friend.last}}</a></span>
+                    <p>
+                      {{comment.text}}
+                    </p>
+                  </blockquote>
+                </div>
+                <div class='col m2'>
+                  <div class='right' ng-show='comment.user_id === PC.user.user_id'>
+                    <a class='btn btn-flat red' ng-click='PC.deleteComment(comment, post)'>Delete</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show='post.comments.length <= 0'>
+              No comments for this post!
             </div>
           </div>
         </div>
         <div class="card-action">
-          <div ng-hide='PC.writingComment && PC.currentPost.post_id === post.post_id'>
-            <a ng-show='{{post.has_comments}}' ng-hide='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.getPostComments(post)' class='btn-flat'>Show Comments</a>
-            <a ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.hidePostComments()' class='btn-flat'>Hide Comments</a>
-            <a class='waves-effect likeCommentButton waves-light black-text btn'>Like</a>
-            <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='PC.toggleWriteComment(post)'>Comment</a>
-          </div>
-          <div ng-show='PC.writingComment && PC.currentPost.post_id === post.post_id'>
-            <div class='row'>
-              <div class='input-field'>
-                <div class='col m10'>
-                  <label for='newComment'>Write a Comment</label>
-                  <input id='newComment' type='text' class='validate' ng-model='newComment'>
-                </div>
-                <div class='col m2'>
-                  <a class='btn' ng-click='PC.createComment(newComment, post)'>Post</a>
-                  <a class='btn' ng-click='PC.toggleWriteComment(post)'>Cancel</a>
+          <div class='row'>
+            <div class='col m9'>
+              <div ng-hide='PC.writingComment && PC.currentPost.post_id === post.post_id'>
+                <a ng-show='{{post.has_comments}}' ng-hide='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.getPostComments(post)' class='btn-flat'>Show Comments</a>
+                <a ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.hidePostComments()' class='btn-flat'>Hide Comments</a>
+                <a class='waves-effect likeCommentButton waves-light black-text btn' ng-click='PC.likePost(post)'>Like</a>
+                <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='PC.toggleWriteComment(post)'>Comment</a>
+              </div>
+              <div ng-show='PC.writingComment && PC.currentPost.post_id === post.post_id'>
+                <div class='row'>
+                  <div class='input-field'>
+                    <div class='col m10'>
+                      <label for='newComment'>Write a Comment</label>
+                      <input id='newComment' type='text' class='validate' ng-model='newComment'>
+                    </div>
+                    <div class='col m2'>
+                      <a class='btn' ng-click='PC.createComment(newComment, post)'>Comment</a>
+                      <a class='btn' ng-click='PC.toggleWriteComment(post)'>Cancel</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div class='col m3'>
+              <h6 class='right' ng-show='post.likes.length > 1 && post.likes.indexOf(PC.user.user_id) < 0'>{{post.likes.length}} people like this</h6>
+              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) < 0'>1 person likes this</h6>
+              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) >= 0'>You like this</h6>
+              <h6 class='right' ng-show='post.likes.length === 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other person like this</h6>
+              <h6 class='right' ng-show='post.likes.length > 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other people like this</h6>
+            </div>
           </div>
-          <h6 class='right' ng-show='post.likes.length > 0'>{{post.likes.length}} people like this</h6>
         </div>
       </div>
     </div>
     <div class='col m2'>
-      <h5>{{PC.user.first}}'s Highlights</h5>
+      <div class='row'>
+        <h5>{{PC.user.first}}'s Highlights</h5>
+        <a class='btn-waves btn modal-trigger' href='#addHighlightModal'><i class='material-icons'>add</i>Add</a>
+      </div>
+      <div class='card' ng-show='PC.highlights.length == 0'>
+        <div class='card-content'>
+          <p>You don't have any highlights!</p>
+        </div>
+      </div>
       <blockquote ng-repeat='feat in PC.highlights'>
         {{feat.text}}
       </blockquote>

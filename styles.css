@@ -14,12 +14,28 @@ body {
   background-color: #EEEEEE;
 }
 
+.postAuthor {
+  padding-left: 2rem;
+}
+.postContent {
+  padding-left: 1rem;
+}
+.postComment {
+  margin: 0;
+}
+
 .postTime {
   margin-bottom: 2rem;
 }
 
 .userProfileName {
   font-weight: bold;
+  margin-bottom: 0;
+}
+
+.profileData {
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .profileWorkoutButton {
@@ -73,4 +89,15 @@ body {
 /*NAV STUFF*/
 .navSettings {
   padding-right: 2rem;
+}
+#search {
+  background-color: #2cda5c;
+}
+#search:focus {
+  background-color: #ffffff;
+}
+
+/*SEARCH STUFF*/
+.searchCard:hover {
+  background-color: #d7d7d7;
 }

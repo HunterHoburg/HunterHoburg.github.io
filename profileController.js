@@ -1,10 +1,8 @@
 var app = angular.module('g4g');
 
-app.controller('profileCtrl', ['$http', '$state', '$stateParams', '$filter', 'formatTimeFilter', profileCtrl]);
-app.controller('loginCtrl', ['$http', '$location', '$state', '$stateParams', loginCtrl]);
-app.controller('feedCtrl', ['$http', '$state', '$stateParams', feedCtrl]);
+app.controller('profileCtrl', ['$http', '$state', '$stateParams', '$filter', 'formatTimeFilter', 'reverseFilter', profileCtrl]);
 
-function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
+function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, reverseFilter) {
   var vm = this;
   vm.user = $stateParams.user;
   vm.printStateParams = function() {
@@ -12,6 +10,7 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
   }
   vm.printStateParams();
   vm.userPosts = [];
+  vm.userNotifications = [];
 
   vm.getUserData = function() {
     console.log('gettingUserData');
@@ -23,14 +22,41 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       }
     }).then(function(res, err) {
       vm.user = res.data[0];
+      vm.notifications();
+      vm.getUserHighlights();
       vm.getUserPosts();
       vm.getUserFriends();
       vm.getUserSports();
-      vm.getUserHighlights();
     })
   }
   vm.getUserData();
 
+  // NOTIFICATIONS
+  vm.notifications = function() {
+    $http({
+      method: 'GET',
+      url: 'http://localhost:3000/profile/notifications',
+      headers: {
+        user_id: vm.user.user_id
+      }
+    }).then(function(res) {
+      console.log('notifications: ', res);
+      // vm.notifications = res.data;
+      for (var i = 0; i < res.data.length; i++) {
+        if (res.data[i].type === 'request') {
+          var request = {
+            first: res.data[i].first,
+            last: res.data[i].last,
+            id: res.data[i].id,
+            user_id: res.data[i].user_id,
+            date: res.data[i].date,
+            type: res.data[i].type
+          }
+          vm.userNotifications.push(request);
+        }
+      }
+    })
+  }
   // POSTS
   vm.getUserPosts = function() {
     $http({
@@ -48,6 +74,10 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       console.log(vm.userPosts);
     })
   }
+  vm.postWrite = false;
+  vm.creatingPost = function() {
+    vm.postWrite = !vm.postWrite;
+  }
   vm.createPost = function(text) {
     $http({
       method: 'POST',
@@ -59,7 +89,27 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
     }).then(function(res, err) {
       console.log(res);
       if (res.data.length > 0) {
-        vm.userPosts.unshift(res.data[0]);
+        vm.postWrite = false;
+        vm.userPosts.push(res.data[0]);
+      }
+      $('#PCon_prefix2').val('')
+    })
+  }
+  vm.likePost = function(post) {
+    $http({
+      method: 'POST',
+      url: 'http://localhost:3000/likes',
+      data: {
+        post_id: post.post_id,
+        user_id: vm.user.user_id
+      }
+    }).then(function(res, err) {
+      console.log(res);
+      // TODO: refactor this heinous shit
+      if (res.data === 'unliked') {
+        vm.userPosts[vm.userPosts.indexOf(post)].likes.splice(vm.userPosts[vm.userPosts.indexOf(post)].likes.indexOf(vm.user.user_id), 1);
+      } else {
+        vm.userPosts[vm.userPosts.indexOf(post)].likes.push(vm.user.user_id)
       }
     })
   }
@@ -110,7 +160,6 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       }
     }).then(function(res, err) {
       console.log(res);
-      // console.log('currentPost: ', vm.currentPost);
       vm.userPosts[vm.userPosts.indexOf(post)].comments = res.data;
     })
   }
@@ -137,6 +186,27 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       console.log(res);
       console.log(vm.userPosts[vm.userPosts.indexOf(post)]);
       vm.userPosts[vm.userPosts.indexOf(post)].comments.push(res.data[0])
+      vm.writingComment = false;
+      vm.commentsExpanded = true;
+    })
+  }
+  vm.deleteComment = function(comment, post) {
+    console.log('deleting comment: ', comment, vm.currentPost);
+    $http({
+      method: 'DELETE',
+      url: 'http://localhost:3000/comments',
+      headers: {
+        comment_id: comment.id,
+        post_id: comment.post_id,
+        user_id: vm.user.user_id
+      }
+    }).then(function(res, err) {
+      console.log(res);
+      //TODO: refactor this heinous query
+      vm.userPosts[vm.userPosts.indexOf(post)].comments.splice(vm.userPosts[vm.userPosts.indexOf(post)].comments.indexOf(comment), 1);
+      vm.currentPost.comments.splice(vm.currentPost.comments.indexOf(comment), 1);
+      console.log(vm.currentPost);
+      console.log(vm.userPosts);
     })
   }
 
@@ -154,15 +224,6 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       vm.friends = res.data;
       vm.friends.push(vm.user);
     })
-  }
-
-  vm.switchNewsFeed = function() {
-    console.log('going to news feed');
-    var jsonObj = {
-      user: vm.user.user_id,
-      auth: true
-    }
-    $state.go('feed', {user: jsonObj})
   }
 
   vm.getWorkouts = function(workout) {
@@ -310,6 +371,33 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
       chart.draw(dataTable, options);
     }
   }
+  vm.addHighlight = function(highlight) {
+    console.log(highlight);
+    $http({
+      method: 'POST',
+      url: 'http://localhost:3000/profileHighlights',
+      data: {
+        text: highlight,
+        user_id: vm.user.user_id
+      }
+    }).then(function(res, err) {
+      console.log(res);
+      vm.highlights.unshift(res.data[0]);
+    })
+  }
+//TODO: only make state change if search is valid
+  vm.search = function(query) {
+    console.log(query);
+    var jsonObj = {
+      user_id: vm.user.user_id,
+      query: query,
+      auth: true
+    }
+    $state.go('search', {data: jsonObj})
+  }
+
+
+
 
   // The following function would require validation to see if changes are made, and then subsequent server calls to change that info
   // vm.changeInfo = function(newQuote, newSport) {
@@ -320,59 +408,19 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter) {
   //     vm.currentUser.sport = newSport;
   //   }
   // }
-}
-
-function loginCtrl($http, $location, $state, $stateParams) {
-  var vm = this;
-
-  vm.currentUser = 'testUser';
-
-  vm.loginSubmit = function(user, pass) {
-    console.log('FUCK');
-    $http({
-      url: 'http://localhost:3000/login',
-      method: 'GET',
-      headers: {
-          username: user,
-          password: pass
-      }
-    }).then(function(res) {
-      console.log(res.data);
-      console.log('logging in');
-      $('#loginModal').closeModal()
-      $state.go('profile', {user: res.data})
-    });
+  vm.friendPage = function(friend) {
+    var jsonObj = {
+      user_id: vm.user.user_id,
+      friend_id: friend.user_id
+    }
+    $state.go('friend', {data: jsonObj})
   }
-
-  vm.registerSubmit = function(user, pass, first, last, date, email, country, zip, agree) {
-    var month = date.toString().slice(4, 7);
-    var day = date.toString().slice(8, 10);
-    var year = date.toString().slice(11, 15);
-    $http({
-      url: 'http://localhost:3000/register',
-      method: 'POST',
-      data: {
-        username: user,
-        password: pass,
-        firstname: first,
-        lastname: last,
-        birthday_month: month,
-        birthday_day: day,
-        birthday_year: year,
-        emailAddress: email,
-        country: country,
-        zip: zip,
-        user_agreement: true
-      }
-    }).then(function(res, err) {
-      console.log('test');
-      $('registerModal').closeModal();
-      console.log(res);
-    })
+  vm.switchNewsFeed = function() {
+    console.log('going to news feed');
+    var jsonObj = {
+      user_id: vm.user.user_id,
+      auth: true
+    }
+    $state.go('feed', {user: jsonObj})
   }
-}
-
-function feedCtrl($http, $state, $stateParams) {
-  var vm = this;
-  vm.test = 'hello';
 }

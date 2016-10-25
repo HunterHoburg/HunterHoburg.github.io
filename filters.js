@@ -24,3 +24,9 @@ app.filter('formatTime', function() {
 		return out;
 	};
 });
+
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});

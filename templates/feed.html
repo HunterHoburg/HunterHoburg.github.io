@@ -11,9 +11,9 @@ $(document).ready(function() {
   <nav class='mainGreen' role='navigation'>
     <div class='nav-wrapper'>
       <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
-      <ul class='right hide-on-med-and-down container'>
+      <ul class='right hide-on-med-and-down'>
         <li class=''>
-          <a href='#' class=''>My Profile</a>
+          <a href='' ng-click='FC.switchProfile()' class=''>My Profile</a>
         </li>
         <li class='active'>
           <a href='' ng-click=''>News Feed</a>
@@ -28,6 +28,107 @@ $(document).ready(function() {
           <a href='#'><i class='material-icons'>settings</i></a>
         </li>
       </ul>
+      <form>
+        <div class="input-field right">
+          <input id="search" type="search" required class='searchBar' placeholder='Search'>
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
     </div>
   </nav>
+  <div class='row'>
+    <div class='col m8'>
+      <div class='row'>
+        <div class='col m10 offset-m2'>
+          <h3>Your News Feed</h3>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col m12'>
+          <div class='card' ng-repeat='post in FC.posts'>
+            <div class='card-content'>
+              <span class='card-title' ng-repeat='friend in FC.friends | filter:{user_id: post.user_id}'><a href='' ng-click='FC.friendPage(friend)'>{{friend.first + ' ' + friend.last}}</a><h6 class='right postTime'>Posted on {{post.post_date | date : medium}}</h6></span>
+              <p class='postContent'>
+                {{post.text}}
+              </p>
+              <div class='postComments' ng-show='FC.commentsExpanded && FC.currentPost.post_id === post.post_id'>
+                <div ng-repeat='comment in post.comments'>
+                  <div class='row postComment'>
+                    <div class='col m10'>
+                      <blockquote class='postComment'>
+                        <span ng-repeat='friend in FC.friends | filter:{user_id: comment.user_id}'>{{friend.first}}</span>
+                        <p>
+                          {{comment.text}}
+                        </p>
+                      </blockquote>
+                    </div>
+                    <div class='col m2'>
+                      <div class='right' ng-show='comment.user_id === FC.user.user_id'>
+                        <a class='btn btn-flat red' ng-click='FC.deleteComment(comment, post)'>Delete</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-action">
+              <div class='row'>
+                <div class='col m9'>
+                  <div ng-hide='FC.writingComment && FC.currentPost.post_id === post.post_id'>
+                    <a ng-show='{{post.has_comments}}' ng-hide='FC.commentsExpanded && FC.currentPost.post_id === post.post_id' href='' ng-click='FC.getPostComments(post)' class='btn-flat'>Show Comments</a>
+                    <a ng-show='FC.commentsExpanded && FC.currentPost.post_id === post.post_id' href='' ng-click='FC.hidePostComments()' class='btn-flat'>Hide Comments</a>
+                    <a class='waves-effect likeCommentButton waves-light black-text btn' ng-click='FC.likePost(post)'>Like</a>
+                    <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='FC.toggleWriteComment(post)'>Comment</a>
+                  </div>
+                  <div ng-show='FC.writingComment && FC.currentPost.post_id === post.post_id'>
+                    <div class='row'>
+                      <div class='input-field'>
+                        <div class='col m10'>
+                          <label for='newComment'>Write a Comment</label>
+                          <input id='newComment' type='text' class='validate' ng-model='newComment'>
+                        </div>
+                        <div class='col m2'>
+                          <a class='btn' ng-click='FC.createComment(newComment, post)'>Comment</a>
+                          <a class='btn' ng-click='FC.toggleWriteComment(post)'>Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class='col m3'>
+                  <h6 class='right' ng-show='post.likes.length > 1 && post.likes.indexOf(FC.user.user_id) < 0'>{{post.likes.length}} people like this</h6>
+                  <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(FC.user.user_id) < 0'>1 person likes this</h6>
+                  <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(FC.user.user_id) >= 0'>You like this</h6>
+                  <h6 class='right' ng-show='post.likes.length === 2 && post.likes.indexOf(FC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other person like this</h6>
+                  <h6 class='right' ng-show='post.likes.length > 2 && post.likes.indexOf(FC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other people like this</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='col m4'>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+      <h1>ADS</h1>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
 </div>

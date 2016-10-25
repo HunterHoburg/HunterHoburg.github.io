@@ -1,0 +1,82 @@
+<script>
+$(document).ready(function() {
+  $('.modal-trigger').leanModal();
+});
+$(document).ready(function() {
+  $('select').material_select();
+});
+</script>
+<div ng-controller='searchCtrl as SC'>
+  <nav class='mainGreen' role='navigation'>
+    <div class='nav-wrapper'>
+      <a id='logo-container' href='#' class='brand-logo topG4G'>Goals 4 Glory</a>
+      <ul class='right hide-on-med-and-down'>
+        <li class=''>
+          <a href='' ng-click='FC.switchProfile()' class=''>My Profile</a>
+        </li>
+        <li class=''>
+          <a href='' ng-click='FC.switchNewsFeed()'>News Feed</a>
+        </li>
+        <li>
+          <a href='#'>My Stats</a>
+        </li>
+        <li>
+          <a href='' ng-click=''>About G4G</a>
+        </li>
+        <li class='right navSettings'>
+          <a href='#'><i class='material-icons'>settings</i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class='row searchParams'>
+    <div class='col m6 offset-m2'>
+      <form class='col m12'>
+        <div class='row'>
+          <div class='input-field col m3'>
+            <input id='searchQuery' type='text' class='validate' placeholder='{{SC.searchData.query}}' ng-model='searchQuery'>
+            <!-- <label for='searchQuery'>Search</label> -->
+          </div>
+          <div class='input-field col m3'>
+            <select name='radiusSelect' ng-model='searchRadius' required='required' id='radiusSelect'>
+              <option value='' disabled selected>
+                Radius
+              </option>
+              <option value='10'>
+                10
+              </option>
+              <option value='20'>
+                20
+              </option>
+              <option value='50'>
+                50
+              </option>
+            </select>
+            <!-- <label for='radiusSelect'>Radius</label> -->
+          </div>
+          <div class='input-field col m3'>
+            <input type='number' class='validate' placeholder='{{SC.user.zip}}' ng-model='searchZip'>
+          </div>
+          <div class='input-field col m3'>
+            <button class='btn btn-waves' ng-click='SC.search(searchQuery, searchRadius, searchZip)'>Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col m2'>
+    </div>
+    <div class='col m8'>
+      <div class='card searchCard' ng-repeat='result in SC.searchResults' ng-click='SC.friendPage(result)'>
+        <div class='card-content'>
+          <span class='card-title'>{{result.first}} {{result.last}}</span>
+          <div class='right'>
+            {{result.zip}}, {{result.state}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
