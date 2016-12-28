@@ -4,7 +4,6 @@ app.controller('friendCtrl', ['$http', '$state', '$stateParams', '$filter', 'rev
 
 function friendCtrl($http, $state, $stateParams, $filter, reverseFilter) {
   var vm = this;
-  // console.log($stateParams);
   vm.userFriendData = $stateParams.data;
   vm.posts = [];
   vm.notFriends = true;
@@ -260,7 +259,7 @@ function friendCtrl($http, $state, $stateParams, $filter, reverseFilter) {
   }
 
 
-  // TODO: FRIEND REQUESTS AND NOTIFICATIONS, and finish up permissions to view some information for people you aren't friends with and modal for unfriending
+  // TODO: FRIEND REQUESTS AND NOTIFICATIONS, and finish up permissions to view some information for people you aren't friends with and modal for unfriending, AND GETTING FRIENDS FOR THE USER SO YOU CAN SEE MUTUAL FRIENDS
 
   vm.addFriend = function() {
     console.log(vm.friendData);

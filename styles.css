@@ -1,6 +1,79 @@
 body {
   background-color: #f2fff9;
 }
+.quotes{
+  text-align: center;
+  margin: 5px 0;
+  padding: 0;
+  z-index: 1;
+  position: relative;
+}
+#splash-col {
+  padding: 0 0 0 0;
+}
+.para-content{
+  margin: 0 auto;
+  width: 100%;
+}
+.splashText {
+  margin-top: 1rem;
+}
+#slide0, #slide1, #slide2, #slide3 {
+  width: 100%;
+}
+
+#slide0 {
+  background-color: #ffffff;
+  height: 100vh;
+  margin: 0;
+  padding: 200px 0 260px 0;
+  background-size: cover;
+}
+#slide1 {
+  background:url('assets/images/Baseball.png') 50% 0 no-repeat fixed;
+  color: #fff;
+  height: 600px;
+  margin: 0;
+  padding: 200px 0 260px 0;
+  background-size: cover;
+}
+#slide2 {
+  background:url('assets/images/Soccer2.png') 50% 0 no-repeat fixed;
+  color: #fff;
+  height: 600px;
+  margin: 0;
+  padding: 200px 0 260px 0;
+  background-size: cover;
+}
+#slide3 {
+  background:url('assets/images/Boxing2.png') 50% 0 no-repeat fixed;
+  color: #fff;
+  height: 600px;
+  margin: 0;
+  padding: 200px 0 260px 0;
+  background-size: cover;
+}
+#slide4 {
+  height: 300px;
+  margin: 0;
+  padding: 200px 0 260px 0;
+  background-size: cover;
+}
+.spacer {
+  height: 100px;
+  width: 100%;
+  background-color: #27e863;
+  text-align: center;
+}
+.spacer div h2 {
+  margin-top: 0;
+}
+.loginNav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
 
 .mainGreen {
   background-color: #00C853;
@@ -53,11 +126,27 @@ body {
 .likeCommentButton:hover {
   background-color: #9bfc9c;
 }
-
-.loginPageButton {
-  background-color: #00C853;
+.post-bottom {
+  margin-bottom: 0;
 }
-.loginPageButton:hover {
+
+.loginButton {
+  background-color: #34bfeb;
+  margin-top: 2rem;
+  width: 9rem;
+}
+.loginButton:hover {
+  background-color: #63cff1;
+}
+.registerButton {
+  background-color: #5be75d;
+  margin-top: 2rem;
+  width: 9rem;
+}
+div .registerButton {
+  margin-left: 3rem;
+}
+.registerButton:hover {
   background-color: #9bfc9c;
 }
 

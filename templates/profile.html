@@ -1,9 +1,8 @@
 <script>
 $(document).ready(function() {
   $('.modal-trigger').leanModal();
-});
-$(document).ready(function() {
   $('select').material_select();
+  $(".dropdown-button").dropdown();
 });
 </script>
 
@@ -12,15 +11,40 @@ $(document).ready(function() {
   <div id='notificationModal' class='modal'>
     <div class='modal-content'>
       <ul>
-        <li ng-repeat='notification in PC.userNotifications'>
-          <div ng-show='notification.type==="request"'>
-            <h5>{{notification.first}} {{notification.last}} sent you a friend request!</h5>
-            <p>
-              {{notification.date | date : medium}}
-            </p>
+        <li ng-show='PC.userNotifications.length === 0'>
+          <h5>No Notifications Right Now!</h5>
+        </li>
+        <li ng-show='PC.userNotifications.length > 0' ng-repeat='notification in PC.userNotifications'>
+          <div ng-show='notification.type==="request"' ng-mouseover='PC.responding = true' ng-mouseleave='PC.responding = false' class='row'>
+            <div class='col m10'>
+              <h5><a href='' class='modal-close' ng-click='PC.friendPage(notification)'>{{notification.first}} {{notification.last}}</a> sent you a friend request!</h5>
+              <p>
+                {{notification.date | date : medium}}
+              </p>
+            </div>
+            <div class='col m2' ng-show='PC.responding'>
+              <button class='btn-floating btn-large green waves-effect'><i class='material-icons' ng-click='PC.requestResponse(true, notification.user_id)'>add</i></button>
+              <button class='btn-floating red waves-effect btn-large' ng-click='PC.requestResponse(false, notification.user_id)'><i class='material-icons'>cancel</i></button>
+            </div>
           </div>
         </li>
       </ul>
+    </div>
+  </div>
+
+  <div id='friendsModal' class='modal modal-fixed-footer'>
+    <div class='modal-content'>
+      <div class='collection'>
+        <a href='' class='collection-item' ng-repeat='friend in PC.friends | filter: {user_id: "!" + PC.user.user_id}'>
+          <span class='title'>{{friend.first}} {{friend.last}}</span>
+          <p>
+            {{friend.state}}, {{friend.country}}
+          </p>
+        </a>
+      </div>
+    </div>
+    <div class='modal-footer'>
+      <button class='btn btn-waves btn-flat modal-close'>Close</button>
     </div>
   </div>
 
@@ -145,11 +169,8 @@ $(document).ready(function() {
         <li>
           <a href='' ng-click='PC.switchNewsFeed()'>News Feed</a>
         </li>
-        <li>
-          <a href='' ng-click='PC.getUserPosts()'>About G4G</a>
-        </li>
         <li class='right navSettings'>
-          <a href='#'><i class='material-icons'>settings</i></a>
+          <li><a class="dropdown-button" href="#" data-activates="settingsDropdown">Settings<i class="material-icons right">settings</i></a></li>
         </li>
       </ul>
       <form ng-submit='PC.search(searchQuery)'>
@@ -161,6 +182,17 @@ $(document).ready(function() {
       </form>
     </div>
   </nav>
+  <ul id='settingsDropdown' class='dropdown-content'>
+    <li>
+      <a href=''>Account Settings</a>
+    </li>
+    <li>
+      <a href=''>About G4G</a>
+    </li>
+    <li>
+      <a href=''>Log Out</a>
+    </li>
+  </ul>
   <!-- Just a spacer for the content -->
   <div class='row'>
   </div>
@@ -171,7 +203,7 @@ $(document).ready(function() {
         <h3 class='flow-text userProfileName heading h3'>{{PC.user.first}} {{PC.user.last}} <a class='modal-trigger btn right' href='#editProfileModal'><i class='material-icons'>mode_edit</i></a></h3>
       </div>
       <div class='row'>
-        <h4 class='flow-text'>{{PC.user.first}}'s friends</h4>
+        <a href='#friendsModal' class='modal-trigger'><h4 class='flow-text'>{{PC.user.first}}'s friends</h4></a>
         <div class='chip' ng-repeat='friend in PC.friends | filter: {user_id: "!" + PC.user.user_id}' ng-click='PC.friendPage(friend)'>
           <a href=''>{{friend.first}} {{friend.last}}</a>
         </div>
@@ -242,24 +274,29 @@ $(document).ready(function() {
                 </div>
                 <div class='col m2'>
                   <div class='right' ng-show='comment.user_id === PC.user.user_id'>
-                    <a class='btn btn-flat red' ng-click='PC.deleteComment(comment, post)'>Delete</a>
+                    <a href=''><i class='material-icons red-text' ng-click='PC.deleteComment(comment, post)'>close</i></a>
                   </div>
                 </div>
               </div>
             </div>
-            <div ng-show='post.comments.length <= 0'>
-              No comments for this post!
+            <div class='row'>
+              <div class='col m10'>
+                <blockquote ng-show='post.comments.length <= 0'>
+                  No comments for this post!
+                </blockquote>
+              </div>
             </div>
           </div>
         </div>
         <div class="card-action">
-          <div class='row'>
-            <div class='col m9'>
+          <div class='row post-bottom'>
+            <div class='col m12'>
               <div ng-hide='PC.writingComment && PC.currentPost.post_id === post.post_id'>
                 <a ng-show='{{post.has_comments}}' ng-hide='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.getPostComments(post)' class='btn-flat'>Show Comments</a>
                 <a ng-show='PC.commentsExpanded && PC.currentPost.post_id === post.post_id' href='' ng-click='PC.hidePostComments()' class='btn-flat'>Hide Comments</a>
-                <a class='waves-effect likeCommentButton waves-light black-text btn' ng-click='PC.likePost(post)'>Like</a>
-                <a class='waves-effect likeCommentButton black-text waves-light btn' ng-click='PC.toggleWriteComment(post)'>Comment</a>
+                <a class='waves-effect likeCommentButton waves-light btn' ng-click='PC.likePost(post)'>Like</a>
+                <a class='waves-effect likeCommentButton waves-light btn' ng-click='PC.toggleWriteComment(post)'>Comment</a>
+                <a class='waves-effect likeCommentButton btn waves-light red right' ng-click='PC.deletePost(post)'>Delete</a>
               </div>
               <div ng-show='PC.writingComment && PC.currentPost.post_id === post.post_id'>
                 <div class='row'>
@@ -276,12 +313,14 @@ $(document).ready(function() {
                 </div>
               </div>
             </div>
-            <div class='col m3'>
-              <h6 class='right' ng-show='post.likes.length > 1 && post.likes.indexOf(PC.user.user_id) < 0'>{{post.likes.length}} people like this</h6>
-              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) < 0'>1 person likes this</h6>
-              <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) >= 0'>You like this</h6>
-              <h6 class='right' ng-show='post.likes.length === 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other person like this</h6>
-              <h6 class='right' ng-show='post.likes.length > 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other people like this</h6>
+            <div class='row'>
+              <div class='col m3 offset-m9 post-bottom'>
+                <h6 class='right' ng-show='post.likes.length > 1 && post.likes.indexOf(PC.user.user_id) < 0'>{{post.likes.length}} people like this</h6>
+                <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) < 0'>1 person likes this</h6>
+                <h6 class='right' ng-show='post.likes.length === 1 && post.likes.indexOf(PC.user.user_id) >= 0'>You like this</h6>
+                <h6 class='right' ng-show='post.likes.length === 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other person like this</h6>
+                <h6 class='right' ng-show='post.likes.length > 2 && post.likes.indexOf(PC.user.user_id) >= 0'>You and {{post.likes.length - 1}} other people like this</h6>
+              </div>
             </div>
           </div>
         </div>

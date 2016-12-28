@@ -33,6 +33,8 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
 
   // NOTIFICATIONS
   vm.notifications = function() {
+    vm.responding = false;
+    vm.userNotifications = [];
     $http({
       method: 'GET',
       url: 'http://localhost:3000/profile/notifications',
@@ -57,6 +59,26 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
       }
     })
   }
+  vm.responding = false;
+  vm.requestResponse = function(bool, friend_id) {
+    // vm.userNotifications.indexOf()
+    $http({
+      method: 'POST',
+      url: 'http://localhost:3000/friend/response',
+      data: {
+        friend_id: friend_id,
+        user_id: vm.user.user_id
+      }
+    }).then(function(res, err) {
+      console.log(res);
+      if (res.data == 'success'){
+        vm.getUserFriends();
+        vm.responding = false;
+        vm.notifications();
+      }
+    })
+  }
+
   // POSTS
   vm.getUserPosts = function() {
     $http({
@@ -111,6 +133,20 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
       } else {
         vm.userPosts[vm.userPosts.indexOf(post)].likes.push(vm.user.user_id)
       }
+    })
+  }
+  vm.deletePost = function(post) {
+    console.log(post);
+    $http({
+      method: 'DELETE',
+      url: 'http://localhost:3000/posts',
+      headers: {
+        post_id: post.post_id,
+        has_comments: post.has_comments,
+        user_id: post.user_id
+      }
+    }).then(function(res, err) {
+      console.log(res);
     })
   }
 
@@ -169,7 +205,7 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
   vm.toggleWriteComment = function(post) {
     vm.getPostComments(post);
     vm.currentPost = post;
-    vm.commentsExpanded = !vm.commentsExpanded;
+    // vm.commentsExpanded = !vm.commentsExpanded;
     vm.writingComment = !vm.writingComment;
   }
   vm.createComment = function(text, post) {
@@ -202,9 +238,11 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
       }
     }).then(function(res, err) {
       console.log(res);
-      //TODO: refactor this heinous query
-      vm.userPosts[vm.userPosts.indexOf(post)].comments.splice(vm.userPosts[vm.userPosts.indexOf(post)].comments.indexOf(comment), 1);
-      vm.currentPost.comments.splice(vm.currentPost.comments.indexOf(comment), 1);
+      for (var i = 0; i < vm.currentPost.comments.length; i++) {
+        if (vm.currentPost.comments[i].id === comment.id) {
+          vm.currentPost.comments.splice(i, 1);
+        }
+      }
       console.log(vm.currentPost);
       console.log(vm.userPosts);
     })

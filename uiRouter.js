@@ -1,4 +1,4 @@
-var app = angular.module('g4g', ['ui.router'])
+var app = angular.module('g4g', ['ui.router', 'ngCookies'])
 
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
       $urlRouterProvider.otherwise('/');
