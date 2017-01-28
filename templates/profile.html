@@ -83,7 +83,17 @@ $(document).ready(function() {
             <!-- GOTTA DO SPORT EDITING RIGHT HERE -->
             <!-- <div class='' -->
           </div>
-            <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-clPCk='PC.changeInfo(newQuote, newSport)'>Save</a>
+          <div class='file-field input-field'>
+            <h6>Change Profile Picture</h6>
+            <div class="btn">
+              <span>File</span>
+              <input type='file' ng-model='newProfilePicture' ngf-accept='"image/*"' ngf-min-height="100" ngf-max-height='2000' ngf-min-width="100" ngf-max-width='2000' ngf-select name='file' ngf-max-size='20MB'>
+            </div>
+            <div class='file-path-wrapper'>
+              <input class='file-path validate' type='text'>
+            </div>
+          </div>
+            <a class='waves-effect waves-light btn loginPageButton modal-close' type='submit'  ng-click='PC.changeInfo(newQuote, newSport, newProfilePicture)'>Save</a>
             <a class='waves-effect waves-dark btn cancelButton modal-close'>Cancel</a>
           </div>
       </div>
@@ -199,7 +209,8 @@ $(document).ready(function() {
   <div class='row'>
     <div class='col m3'>
       <div class='row'>
-        <img class='responsive-img' src='assets/profilePic.jpg'>
+        <img class='responsive-img profilePicture' src='assets/profilePic.jpg'>
+        <!-- <img class='responsive-img profilePicture' ng-src='data:image/png;base64,{{PC.profilePicture}}'> -->
         <h3 class='flow-text userProfileName heading h3'>{{PC.user.first}} {{PC.user.last}} <a class='modal-trigger btn right' href='#editProfileModal'><i class='material-icons'>mode_edit</i></a></h3>
       </div>
       <div class='row'>
@@ -237,7 +248,17 @@ $(document).ready(function() {
             <a class='btn modal-trigger profileProgressButton' href='#viewProgressModal'>Progress</a>
             <a class='btn profileWorkoutButton' ng-click='PC.creatingPost()' ng-show='!PC.postWrite'>Post Status</a>
             <a class='btn profileWorkoutButton' ng-click='PC.creatingPost()' ng-show='PC.postWrite'>Cancel</a>
+          </div>
+          <div class='col m9' ng-show='!PC.postWrite'>
+            <!-- <div id='calendar_basic' class='heatmap'>
+            </div> -->
+            <div id='chart-one'>
+              
+            </div>
+            <!-- <div class='calendar-heatmap' data='PC.example_data' color='"#72f577"' overview='overview' handler='PC.print'>
 
+            </div> -->
+            <calendar-heatmap data='PC.calendar' color='"#72f577"' overview='year'></calendar-heatmap>
           </div>
           <div class="input-field col m9" ng-show='PC.postWrite'>
             <div class='row'>
@@ -341,4 +362,7 @@ $(document).ready(function() {
       </blockquote>
     </div>
   </div>
+  <!-- <div id='calendar_basic'>
+
+  </div> -->
 </div>

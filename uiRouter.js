@@ -1,4 +1,4 @@
-var app = angular.module('g4g', ['ui.router', 'ngCookies'])
+var app = angular.module('g4g', ['ui.router', 'ngCookies', 'ngFileUpload', 'base64', 'g1b.calendar-heatmap'])
 
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
       $urlRouterProvider.otherwise('/');

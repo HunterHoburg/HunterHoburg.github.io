@@ -18,8 +18,12 @@ function loginCtrl($http, $location, $state, $stateParams, $cookies) {
     }).then(function(res) {
       console.log(res.data);
       console.log('logging in');
-      $('#loginModal').closeModal()
-      $state.go('profile', {user: res.data})
+      if (res.data) {
+        $('#loginModal').closeModal()
+        $state.go('profile', {user: res.data})
+      } else {
+        Materialize.toast('Invalid username or password', 3000);
+      }
     });
   }
 

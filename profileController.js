@@ -1,8 +1,8 @@
 var app = angular.module('g4g');
 
-app.controller('profileCtrl', ['$http', '$state', '$stateParams', '$filter', 'formatTimeFilter', 'reverseFilter', profileCtrl]);
+app.controller('profileCtrl', ['$http', '$state', '$stateParams', '$filter', 'formatTimeFilter', 'reverseFilter', 'Upload', '$base64', profileCtrl]);
 
-function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, reverseFilter) {
+function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, reverseFilter, Upload, $base64) {
   var vm = this;
   vm.user = $stateParams.user;
   vm.printStateParams = function() {
@@ -22,6 +22,7 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
       }
     }).then(function(res, err) {
       vm.user = res.data[0];
+      vm.getProfilePicture();
       vm.notifications();
       vm.getUserHighlights();
       vm.getUserPosts();
@@ -312,6 +313,8 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
     })
   }
 
+  
+
   vm.pushupsChart = function() {
     var pushupsArr = [];
       console.log(vm.workoutMeta);
@@ -325,7 +328,7 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
       }
       console.log(pushupsArr);
 
-      google.charts.load('current', {'packages':['controls', 'corechart']});
+      google.charts.load('current', {'packages':['controls', 'corechart', 'calendar']});
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
@@ -374,7 +377,7 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
     }
     console.log(planksArr);
 
-    google.charts.load('current', {'packages':['controls', 'corechart']});
+    google.charts.load('current', {'packages':['controls', 'corechart', 'calendar']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
@@ -435,17 +438,48 @@ function profileCtrl($http, $state, $stateParams, $filter, formatTimeFilter, rev
   }
 
 
-
+  vm.getProfilePicture = function() {
+    $http({
+      method: 'GET',
+      url: 'http://localhost:3000/profilePicture',
+      headers: {
+        user_id: vm.user.user_id
+      }
+    }).then(function(res, err) {
+      console.log('picture res', res);
+      // Upload.base64DataUrl(res.data).then(function(base) {
+      //   vm.profilePicture = base;
+      // })
+      // vm.profilePicture = $base64.decode(res.data);
+      // vm.profilePicture = $base64.encode(res.data);
+      vm.profilePicture = res.data;
+    })
+  }
 
   // The following function would require validation to see if changes are made, and then subsequent server calls to change that info
-  // vm.changeInfo = function(newQuote, newSport) {
-  //   if (vm.currentUser.quote !== newQuote) {
-  //     vm.currentUser.quote = newQuote;
-  //   }
-  //   if (vm.currentUser.sport !== newSport) {
-  //     vm.currentUser.sport = newSport;
-  //   }
-  // }
+  vm.changeInfo = function(newQuote, newSport, newPic) {
+    // if (vm.currentUser.quote !== newQuote) {
+    //   vm.currentUser.quote = newQuote;
+    // }
+    // if (vm.currentUser.sport !== newSport) {
+    //   vm.currentUser.sport = newSport;
+    // }
+    if (newPic !== undefined) {
+      Upload.dataUrl(newPic, true).then(function(dataUrl) {
+        var pic = Upload.dataUrltoBlob(dataUrl, vm.user.user_id);
+        Upload.upload({
+          method: 'POST',
+          url: 'http://localhost:3000/profilePicture',
+          data: {
+            file: pic,
+            user: vm.user.user_id
+          }
+        }).then(function(res) {
+          console.log('res', res);
+        })
+      })
+    }
+  }
   vm.friendPage = function(friend) {
     var jsonObj = {
       user_id: vm.user.user_id,
